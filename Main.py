@@ -39,7 +39,7 @@ st.subheader('''''')
 
 st.subheader('''
         Presenta \n
-        +Bañuelos Rangel Martha Esther
+        +Bañuelos Rangel Martha Esther\\
         +Jesus Kohel Islas
 ''')
 
