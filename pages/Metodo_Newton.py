@@ -162,178 +162,220 @@ with tab1:
                   Es importante calcular la matriz jacobiana y su inversa en cada interación. 
                   """
          with tab3:
-             def parse_inputsys(inp):
-                 eq = []
-                 sfix = ''
-                 for i in inp:
-                     if i != '{' and i != '}' and i != '[' and i != ']' and i != '(' and i != ')' and i != ' ':
-                         sfix = sfix + i
-                         for t in sfix.split(','):
-                             eq.append(sy.parse_expr(t,transformations='all'))
-                             return eq
-                         def get_maxsymbs(sys):
-                             maxs = 0
-                             s = []
-                             for i in sys:
-                                 if max(maxs,len(i.free_symbols)) != maxs:
-                                     s = list(i.free_symbols)
-                                     return s
-                                 def jacobian(ff,symb):
-                                     """
-                                     It takes a vector of functions and a vector of symbols and returns the Jacobian matrix of the functions with respect to
-                                     the symbols
-                                     :param ff: the function
-                                     :param symb: the symbols that are used in the function
-                                     :return: A matrix of the partial derivatives of the function with respect to the variables.
-                                     """
-                                     m = []
-                                     for i in range(0,len(ff)):
-                                         aux  = []
-                                         for j in range(0,len(symb)):
-                                             aux.append(sy.diff(ff[i],symb[j]))
-                                             m.append(aux)
-                                             return np.array(m)
-                                         def hessian(ff,symb):
-                                             """
-                                             It takes a vector of functions and a vector of symbols and returns the Hessian matrix of the functions with respect to
-                                             the symbols
-                                             :param ff: a list of functions of the form f(x,y,z)
-                                             :param symb: the symbols that are used in the function
-                                             :return: A matrix of the second derivatives of the function.
-                                             """
-                                             m = []
-                                             for i in range(0,len(ff)):
-                                                 aux  = []
-                                                 for j in range(0,len(symb)):
-                                                     aux.append(sy.diff(ff[i],symb[j],2))
-                                                     m.append(aux)
-                                                     return np.array(m)
-                                                 def eval_matrix(matrix , v,symb):
-                                                     """
-                                                     It takes a matrix, a list of symbols and a list of values, and returns the matrix with the symbols substituted by the
-                                                     values
-                                                     :param matrix: the matrix of the system of equations
-                                                     :param v: the vector of values for the variables
-                                                     :param symb: the symbols that will be used in the matrix
-                                                     :return: the matrix with the values of the variables substituted by the values of the vector v.
-                                                     """
-                                                     e = 0
-                                                     mm = []
-                                                     for i in range(0,len(matrix)):
-                                                         aux = []
-                                                         ev = []
-                                                         for k in range(0,len(symb)):
-                                                             ev.append((symb[k],v[k]))
-                                                             for j in range(len(matrix[i])):
-                                                                 aux.append(matrix[i][j].subs(ev).evalf())
-                                                                 mm.append(aux)
-                                                                 return np.array(mm)
-                                                             def evalVector(ff, x0,symb):
-                                                                 """
-                                                                 > Given a list of symbolic expressions, a list of values for the symbols, and a list of the symbols, evaluate the
-                                                                 symbolic expressions at the given values
-                                                                 :param ff: the vector of functions
-                                                                 :param x0: initial guess
-                                                                 :param symb: the symbols that are used in the symbolic expression
-                                                                 :return: the value of the function at the point x0.
-                                                                 """
-                                                                 v = []
-                                                                 for i in range(0,len(ff)):
-                                                                     ev = []
-                                                                     for k in range(0,len(x0)):
-                                                                         ev.append((symb[k],x0[k]))
-                                                                         v.append(ff[i].subs(ev).evalf())
-                                                                         return np.array(v)
-                                                                     def NewtonMethod( ff, x0,symb ):
-                                                                         """
-                                                                         The function takes in a vector of functions, a vector of initial guesses, and a vector of symbols. It then calculates
-                                                                         the Jacobian matrix, the Jacobian matrix evaluated at the initial guess, the inverse of the Jacobian matrix evaluated at
-                                                                         the initial guess, the vector of functions evaluated at the initial guess, and then the Newton step.
-                                                                         The function returns the Newton step.
-                                                                         :param ff: the function we want to find the root of
-                                                                         :param x0: initial guess
-                                                                         :param symb: the symbols used in the function
-                                                                         :return: The return value is the x_np1 value.
-                                                                         """
-                                                                         j = jacobian(ff,symb)
-                                                                         #print("Jacobian Matrix")
-                                                                         # #pprint(Matrix(j))
-                                                                         # jev = sy.Matrix( eval_matrix(j,x0,symb))
-                                                                         # #print("J(",x0,")")
-                                                                         # #pprint(jev)
-                                                                         # jinv = jev.inv()
-                                                                         # #print("F(",x0,")")
-                                                                         ffev = sy.Matrix(evalVector(np.transpose(ff),x0,symb))
-                                                                         #print("J^-1(",x0,")*","F(",x0,")")
-                                                                         mm = sy.Matrix(jinv)*ffev
-                                                                         return list(x_np1-mm)
-                                                                     def norm_inf(x_0,x_1):
-                                                                         """
-                                                                         > The function `norm_inf` takes two vectors `x_0` and `x_1` and returns the maximum absolute difference between the two
-                                                                         vectors
-                                                                         :param x_0: the initial guess
-                                                                         :param x_1: the vector of the current iteration
-                                                                         :return: The maximum difference between the two vectors.
-                                                                         """
-                                                                         a = [abs(x_1[i]-x_0[i]) for i in range(len(x_0))]
-                                                                         return max(a)
-                                                                     def newton_method(ff,x_0,symbs,error,maxiter):
-                                                                         """
-                                                                         Given a function (x,y)$, a starting point $, and a list of symbols,
-                                                                         the function will return the next point $ in the Newton's method sequence
-                                                                         :param ff: the function to be minimized
-                                                                         :param x_0: initial guess
-                                                                         :param symbs: the symbols that we're using in the function
-                                                                         :return: the final value of x_0, the list of x values, and the list of y values.
-                                                                         """
-                                                                         #pprint(Matrix(x_0))
-                                                                         # xs = []
-                                                                         # ys = []
-                                                                         # xns = [x_0]
-                                                                         # erros = []
-                                                                         # iterr = 0
-                                                                         # while True and iterr < maxiter:
-                                                                         # x_1 = NewtonMethod(ff,x_0,symbs)
-                                                                         # #print(x_1)
-                                                                         # ninf = norm_inf(x_0,x_1)
-                                                                         # erros.append(ninf)
-                                                                         # #print(ninf)
-                                                                         # x_0 = list(x_1)
-                                                                         # xns.append(tuple(x_0))
-                                                                         # xs.append(x_0[0])
-                                                                         # ys.append(x_0[1])
-                                                                         if ninf < error:
-                                                                             break
-                                                                         iterr = iterr+1
-                                                                         return xns,xs,ys,erros
-                                                                     def get_sympy_subplots(plot:Plot):
-                                                                         """
-                                                                         It takes a plot object and returns a matplotlib figure object
-                                                                         :param plot: The plot object to be rendered
-                                                                         :type plot: Plot
-                                                                         :return: A matplotlib figure object.
-                                                                         """
-                                                                         backend = MatplotlibBackend(plot)
-                                                                         backend.process_series()
-                                                                         backend.fig.tight_layout()
-                                                                         return backend.plt
-                                                                     st.title(':blue[Metodo de Newton]')
-                                                                     st.subheader(':blue[Descripción del método]')
-                                                                     methd_desc1 = r'''
-                                                                     El método de Newton para sistemas de ecuaciones no lineales es una extensión del método utilizado para
-                                                                     resolver una sola ecuación, por tanto sigue la misma estrategia que se empleó en el caso de una sola ecuación:
-                                                                     linealizar y resolver, repitiendo los pasos con la frecuencia necesaria. Consideramos, por sencillez, el caso de
-                                                                     dos ecuaciones con dos variables:
-                                                                     '''
-                                                                     methd_desc2 = r'''
-                                                                        \begin{cases}
-                                                                        f(x,y) = 0 \\
-                                                                        g(x,y) = 0 \\
-                                                                        \end{cases}
-                                                                        '''
+            def parse_inputsys(inp):
+                eq = []
+                sfix = ''
+
+                for i in inp:
+                    if i != '{' and i != '}' and i != '[' and i != ']' and i != '(' and i != ')' and i != ' ':
+                        sfix = sfix + i
+                        for t in sfix.split(','):
+                            eq.append(sy.parse_expr(t,transformations='all'))
+                return eq
+
+def get_maxsymbs(sys):
+    maxs = 0
+    s = []
+    for i in sys:
+        if max(maxs,len(i.free_symbols)) != maxs:
+            s = list(i.free_symbols)
+
+    return s
+
+def jacobian(ff,symb):
+    """
+    It takes a vector of functions and a vector of symbols and returns the Jacobian matrix of the functions with respect to
+    the symbols
+    :param ff: the function
+    :param symb: the symbols that are used in the function
+    :return: A matrix of the partial derivatives of the function with respect to the variables.
+    """
+    m = []
+
+    for i in range(0,len(ff)):
+        aux  = []
+        for j in range(0,len(symb)):
+            aux.append(sy.diff(ff[i],symb[j]))
+        m.append(aux)
+
+    return np.array(m)
+
+def hessian(ff,symb):
+    """
+    It takes a vector of functions and a vector of symbols and returns the Hessian matrix of the functions with respect to
+    the symbols
+    :param ff: a list of functions of the form f(x,y,z)
+    :param symb: the symbols that are used in the function
+    :return: A matrix of the second derivatives of the function.
+    """
+
+    m = []
+
+    for i in range(0,len(ff)):
+        aux  = []
+        for j in range(0,len(symb)):
+            aux.append(sy.diff(ff[i],symb[j],2))
+        m.append(aux)
+    return np.array(m)
+
+def eval_matrix(matrix , v,symb):
+    """
+    It takes a matrix, a list of symbols and a list of values, and returns the matrix with the symbols substituted by the
+    values
+
+    :param matrix: the matrix of the system of equations
+    :param v: the vector of values for the variables
+    :param symb: the symbols that will be used in the matrix
+    :return: the matrix with the values of the variables substituted by the values of the vector v.
+    """
+    e = 0
+    mm = []
+    for i in range(0,len(matrix)):
+        aux = []
+        ev = []
+        for k in range(0,len(symb)):
+            ev.append((symb[k],v[k]))
+        for j in range(len(matrix[i])):
+            aux.append(matrix[i][j].subs(ev).evalf())
+        mm.append(aux)
+    return np.array(mm)
+
+def evalVector(ff, x0,symb):
+    """
+    > Given a list of symbolic expressions, a list of values for the symbols, and a list of the symbols, evaluate the
+    symbolic expressions at the given values
+
+    :param ff: the vector of functions
+    :param x0: initial guess
+    :param symb: the symbols that are used in the symbolic expression
+    :return: the value of the function at the point x0.
+    """
+    v = []
+    for i in range(0,len(ff)):
+        ev = []
+
+        for k in range(0,len(x0)):
+            ev.append((symb[k],x0[k]))
+
+        v.append(ff[i].subs(ev).evalf())
+    return np.array(v)
+
+def NewtonMethod( ff, x0,symb ):
+    """
+    The function takes in a vector of functions, a vector of initial guesses, and a vector of symbols. It then calculates
+    the Jacobian matrix, the Jacobian matrix evaluated at the initial guess, the inverse of the Jacobian matrix evaluated at
+    the initial guess, the vector of functions evaluated at the initial guess, and then the Newton step.
+
+    The function returns the Newton step.
+
+    :param ff: the function we want to find the root of
+    :param x0: initial guess
+    :param symb: the symbols used in the function
+    :return: The return value is the x_np1 value.
+    """
+    j = jacobian(ff,symb)
+    #print("Jacobian Matrix")
+    #pprint(Matrix(j))
+    jev = sy.Matrix( eval_matrix(j,x0,symb))
+    #print("J(",x0,")")
+    #pprint(jev)
+
+    jinv = jev.inv()
+    #print("F(",x0,")")
+    ffev = sy.Matrix(evalVector(np.transpose(ff),x0,symb))
+    #print("J^-1(",x0,")*","F(",x0,")")
+    mm = sy.Matrix(jinv)*ffev
+    #pprint(mm)
+    x_np1 = sy.Matrix(np.transpose(np.array(x0)))
+    #pprint(x_np1-mm)
+    return list(x_np1-mm)
+
+def norm_inf(x_0,x_1):
+    """
+    > The function `norm_inf` takes two vectors `x_0` and `x_1` and returns the maximum absolute difference between the two
+    vectors
+
+    :param x_0: the initial guess
+    :param x_1: the vector of the current iteration
+    :return: The maximum difference between the two vectors.
+    """
+    a = [abs(x_1[i]-x_0[i]) for i in range(len(x_0))]
+    return max(a)
+
+def newton_method(ff,x_0,symbs,error,maxiter):
+    """
+    Given a function (x,y)$, a starting point $, and a list of symbols,
+    the function will return the next point $ in the Newton's method sequence
+
+    :param ff: the function to be minimized
+    :param x_0: initial guess
+    :param symbs: the symbols that we're using in the function
+    :return: the final value of x_0, the list of x values, and the list of y values.
+    """
+    #pprint(Matrix(x_0))
+    xs = []
+    ys = []
+    xns = [x_0]
+    erros = []
+    iterr = 0
+    while True and iterr < maxiter:
+
+        x_1 = NewtonMethod(ff,x_0,symbs)
+        #print(x_1)
+        ninf = norm_inf(x_0,x_1)
+        erros.append(ninf)
+        #print(ninf)
+
+        x_0 = list(x_1)
+        xns.append(tuple(x_0))
+        xs.append(x_0[0])
+        ys.append(x_0[1])
+        if ninf < error:
+            #print("Iteraciones: ",iterr)
+            break
+        iterr = iterr+1
+
+    #print(x_0)
+    return xns,xs,ys,erros
+
+
+def get_sympy_subplots(plot:Plot):
+    """
+    It takes a plot object and returns a matplotlib figure object
+
+    :param plot: The plot object to be rendered
+    :type plot: Plot
+    :return: A matplotlib figure object.
+    """
+    backend = MatplotlibBackend(plot)
+
+    backend.process_series()
+    backend.fig.tight_layout()
+    return backend.plt
+
+
+st.title(':blue[Metodo de Newton]')
+
+st.subheader(':blue[Descripción del método]')
+
+methd_desc1 = r'''
+    El método de Newton para sistemas de ecuaciones no lineales es una extensión del método utilizado para
+resolver una sola ecuación, por tanto sigue la misma estrategia que se empleó en el caso de una sola ecuación:
+linealizar y resolver, repitiendo los pasos con la frecuencia necesaria. Consideramos, por sencillez, el caso de
+dos ecuaciones con dos variables:
+'''
+
+methd_desc2 = r'''
+
+\begin{cases}
+f(x,y) = 0 \\
+g(x,y) = 0 \\
+\end{cases}
+'''
+
 methd_desc3 = r'''
-                                                                        F'(x,y) = \begin{pmatrix}
-                                                                             \frac{\partial f}{\partial x} (x,y) & \frac{\partial f}{\partial y} (x,y) \\
+F'(x,y) = \begin{pmatrix}
+\frac{\partial f}{\partial x} (x,y) & \frac{\partial f}{\partial y} (x,y) \\
 \frac{\partial g}{\partial x} (x,y) & \frac{\partial g}{\partial y} (x,y)
 \end{pmatrix}
 '''
@@ -555,11 +597,6 @@ try:
     st.pyplot(pda)
 except Exception as e:
     st.error(str(e))
-
-
-
-
-
 
             
                   
