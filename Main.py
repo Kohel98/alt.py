@@ -39,7 +39,8 @@ st.subheader('''''')
 
 st.subheader('''
         Presenta \n
-        *Nombre de los Integrantes
+        +Bañuelos Rangel Martha Esther
+        +Jesus Kohel Islas
 ''')
 
 
