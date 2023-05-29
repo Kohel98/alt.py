@@ -410,121 +410,123 @@ debemos calcularla en cada paso. Esto se puede resolver descomponiendo el métod
                  system = parse_inputsys(sys)
              except :
                  st.error('Error al introducir el sistema de ecuaciones', icon="🚨")
-                 st.write('_El sistema de ecuaciones es:_')
-                 psys ='F'+str(tuple(get_maxsymbs(system)))+ r'''
-                     =\begin{cases}
+                 
+             st.write('_El sistema de ecuaciones es:_')
+             psys ='F'+str(tuple(get_maxsymbs(system)))+ r'''
+              =\begin{cases}
 
                  '''
-                 for i in system:
-                     psys = psys + sy.latex(i)
-                     psys = psys + r' = 0\\'
+             for i in system:
+                 psys = psys + sy.latex(i)
+                 psys = psys + r' = 0\\'
 
-                 psys = psys + r'\end{cases}'
-
-                 st.latex(psys)
-                 fx = sy.lambdify(list(get_maxsymbs(system)),system[0])
-                 fx2 = sy.lambdify(list(get_maxsymbs(system)),system[1])
-                 try:
-                     st.write('_Grafica del sistema como función implicita_ : ')
-                     x,y = sy.symbols('x,y')
-                     p1 = sy.plot_implicit(system[0],(x,-10,10),(y,-10,10),show=False,line_color='red')
-                     for i in range(1,len(system)):
-                         p1.append(sy.plot_implicit(system[i],(x,-10,10),(y,-10,10),show=False,line_color='blue')[0])
-                     t2dplot =  get_sympy_subplots(p1)
-                     st.pyplot(t2dplot)
-                     st.write('_Grafica 3D del sistema_')
+             psys = psys + r'\end{cases}'
+             st.latex(psys)
+             fx = sy.lambdify(list(get_maxsymbs(system)),system[0])
+             fx2 = sy.lambdify(list(get_maxsymbs(system)),system[1])
+             
+             try:
+                 st.write('_Grafica del sistema como función implicita_ : ')
+                 x,y = sy.symbols('x,y')
+                 p1 = sy.plot_implicit(system[0],(x,-10,10),(y,-10,10),show=False,line_color='red')
+                 for i in range(1,len(system)):
+                     p1.append(sy.plot_implicit(system[i],(x,-10,10),(y,-10,10),show=False,line_color='blue')[0])
+                 t2dplot =  get_sympy_subplots(p1)
+                 st.pyplot(t2dplot)
+                 st.write('_Grafica 3D del sistema_')
                      
 
-                     plo1 = gro.Figure()
+                 plo1 = gro.Figure()
 
-                     ran = np.linspace(-10,10,100)
-                     su1 = [[fx(ran[xs],ran[ys]) for xs in range (0,len(ran)) ] for ys in range(0,len(ran))]
-                     su2 = [[fx2(ran[xs],ran[ys]) for xs in range (0,len(ran)) ] for ys in range(0,len(ran))]
+                 ran = np.linspace(-10,10,100)
+                 su1 = [[fx(ran[xs],ran[ys]) for xs in range (0,len(ran)) ] for ys in range(0,len(ran))]
+                 su2 = [[fx2(ran[xs],ran[ys]) for xs in range (0,len(ran)) ] for ys in range(0,len(ran))]
 
-                     plo1.add_trace(gro.Surface(z=su1,name='Ecuación 1',opacity=.7))
-                     plo1.add_trace(gro.Surface(z=su2,name='Ecuación 2',opacity=.7))
+                 plo1.add_trace(gro.Surface(z=su1,name='Ecuación 1',opacity=.7))
+                 plo1.add_trace(gro.Surface(z=su2,name='Ecuación 2',opacity=.7))
 
-                     st.plotly_chart(plo1)
-                     p13d = plot3d(system[0],(x,-10,10),(y,-10,10),show=False,surface_color='r')
-                     for i in range(1,len(system)):
-                         p13d.append(plot3d(system[i],(x,-10,10),(y,-10,10),show=False,surface_color='g')[0])
+                 st.plotly_chart(plo1)
+                 p13d = plot3d(system[0],(x,-10,10),(y,-10,10),show=False,surface_color='r')
+                 for i in range(1,len(system)):
+                     p13d.append(plot3d(system[i],(x,-10,10),(y,-10,10),show=False,surface_color='g')[0])
 
-                     t3dplot = get_sympy_subplots(p13d)
-                     st.pyplot(t3dplot)
-                 except Exception as excep:
-                     st.error(excep)
-                     st.error('Error al graficar', icon="🚨")
+                 t3dplot = get_sympy_subplots(p13d)
+                 st.pyplot(t3dplot)
+             except Exception as excep:
+                 st.error(excep)
+                 st.error('Error al graficar', icon="🚨")
 
 
-                 initaprx = st.text_input('Ingrese una aproximacion inicial $x_0$: ',value=[-1,1])
+             initaprx = st.text_input('Ingrese una aproximacion inicial $x_0$: ',value=[-1,1])
 
-                 intaprox = []
-                 intstr = ''
-                 for i in initaprx:
+             intaprox = []
+             intstr = ''
+             for i in initaprx:
 
-                     if i != '{' and i != '}' and i != '[' and i != ']' and i != ' ':
-                         intstr = intstr + i
+                 if i != '{' and i != '}' and i != '[' and i != ']' and i != ' ':
+                     intstr = intstr + i
 
-                 try:
-                     st.write('La aproximacion inicial es: ')
-                     intaprox = list(map(int, intstr.split(',')))
-                     st.latex(sy.latex(sy.Matrix(list(intaprox))))
-                 except:
-                     st.error('Error al introducir la aproximación inicial', icon="🚨")
-                 err = st.text_input('Ingrese el error de tolerancia: ',value='0.00001')
-                 try:
-                     st.write('El error de tolerancia es:', float(err))
-                 except: 
+             try:
+                 st.write('La aproximacion inicial es: ')
+                 intaprox = list(map(int, intstr.split(',')))
+                 st.latex(sy.latex(sy.Matrix(list(intaprox))))
+             except:
+                 st.error('Error al introducir la aproximación inicial', icon="🚨")
+                 
+             err = st.text_input('Ingrese el error de tolerancia: ',value='0.00001')
+             try:
+                 st.write('El error de tolerancia es:', float(err))
+             except: 
                      st.error('Error al introducir el error de tolerancia', icon="🚨")
                 
-                 maxiter = st.slider('Maximo de Iteraciones',10,1000,10)
+             maxiter = st.slider('Maximo de Iteraciones',10,1000,10)
                  
-                 st.write("_Matrix Jeacobiana_:")
-                 symbs = (get_maxsymbs(system))
-                 st.latex(sy.latex(sy.Matrix(jacobian(system,symbs))))
-                 method = newton_method(system,list(intaprox),symbs,float(err),maxiter)
-                 tabb = []
-                 for i in range(0,len(method[1])):
-                     aux = list(method[0][i])
-                     aux.append(method[3][i])
-                     tabb.append(aux)
+             st.write("_Matrix Jeacobiana_:")
+             symbs = (get_maxsymbs(system))
+             st.latex(sy.latex(sy.Matrix(jacobian(system,symbs))))
+             method = newton_method(system,list(intaprox),symbs,float(err),maxiter)
+             tabb = []
+             for i in range(0,len(method[1])):
+                 aux = list(method[0][i])
+                 aux.append(method[3][i])
+                 tabb.append(aux)
                      
-                 cols = list(map(str, list(symbs)))
-                 cols.append("Error")
-                 table = list(map(str, list(symbs)))
-                 st.write(table)
-                 try:
-                     xs =[float(i) for i in method[1]]
-                     xy =[float(i) for i in method[2]]
-                     evalfx = [float(fx(i[0],i[1])) for i in method[0]]
+             cols = list(map(str, list(symbs)))
+             cols.append("Error")
+             table = list(map(str, list(symbs)))
+             st.write(table)
+             try:
+                 xs =[float(i) for i in method[1]]
+                 xy =[float(i) for i in method[2]]
+                 evalfx = [float(fx(i[0],i[1])) for i in method[0]]
                      
-                     plo = gro.Figure()
-                     plo.add_trace(gro.Scatter3d(x=xs,y=xy,z=evalfx,name='Aproximaciones'))
+                 plo = gro.Figure()
+                 plo.add_trace(gro.Scatter3d(x=xs,y=xy,z=evalfx,name='Aproximaciones'))
 
-                     ranx = np.linspace(int(method[1][-1]-1),int(method[1][-1]+1),100)
-                     rany = np.linspace(int(method[2][-1]-1),int(method[2][-1]+1),100)
-                     su1 = [[fx(ranx[xs],rany[ys]) for xs in range (0,len(ranx)) ] for ys in range(0,len(rany))]
-                     su2 = [[fx2(ranx[xs],rany[ys]) for xs in range (0,len(ranx)) ] for ys in range(0,len(rany))]
-                     plo.add_trace(gro.Surface(z=su1,name='Ecuación 1',opacity=.8))
-                     plo.add_trace(gro.Surface(z=su2,name='Ecuación 2',opacity=.7))
+                 ranx = np.linspace(int(method[1][-1]-1),int(method[1][-1]+1),100)
+                 rany = np.linspace(int(method[2][-1]-1),int(method[2][-1]+1),100)
+                 su1 = [[fx(ranx[xs],rany[ys]) for xs in range (0,len(ranx)) ] for ys in range(0,len(rany))]
+                 su2 = [[fx2(ranx[xs],rany[ys]) for xs in range (0,len(ranx)) ] for ys in range(0,len(rany))]
+                 plo.add_trace(gro.Surface(z=su1,name='Ecuación 1',opacity=.8))
+                 plo.add_trace(gro.Surface(z=su2,name='Ecuación 2',opacity=.7))
 
-                     plo.update_layout(title='Grafica del Sistema')
-                     st.plotly_chart(plo)
+                 plo.update_layout(title='Grafica del Sistema')
+                 st.plotly_chart(plo)
                      
                      
-                     pf =get_sympy_subplots(p1)
-                     pf.plot(method[1],method[2],'o')
-                     st.pyplot(pf)
-                     auxpd = plot3d(system[0],(x,-1+method[1][-1],method[1][-1]+1),(y,-1+method[2][-1],method[2][-1]+1),show=False,alpha=0.3,title='Grafica de la Solución')
-                     auxpd.append(plot3d(system[1],(x,-1+method[1][-1],method[1][-1]+1),(y,-1+method[2][-1],method[2][-1]+1),show=False,alpha=0.5)[0])
-                     pda = get_sympy_subplots(auxpd)
-                     zs = []
-                     for i in range(methd[1]):
-                          zs.append(system[0].subs({x : method[1][i],y: method[2][i]}).evalf())
-                     pda.plot(method[1],method[2],zs,'o',markersize=30,color='red')
-                     st.pyplot(pda)
-                 except Exception as e:
-                     st.error(str(e))
+                 pf =get_sympy_subplots(p1)
+                 pf.plot(method[1],method[2],'o')
+                 st.pyplot(pf)
+                 auxpd = plot3d(system[0],(x,-1+method[1][-1],method[1][-1]+1),(y,-1+method[2][-1],method[2][-1]+1),show=False,alpha=0.3,title='Grafica de la Solución')
+                 auxpd.append(plot3d(system[1],(x,-1+method[1][-1],method[1][-1]+1),(y,-1+method[2][-1],method[2][-1]+1),show=False,alpha=0.5)[0])
+                 pda = get_sympy_subplots(auxpd)
+                 zs = []
+                 for i in range(method[1]):
+                      zs.append(system[0].subs({x : method[1][i],y: method[2][i]}).evalf())
+                 pda.plot(method[1],method[2],zs,'o',markersize=30,color='red')
+                 st.pyplot(pda)
+             except Exception as e:
+                 st.error(str(e))
                          
 
 
