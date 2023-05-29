@@ -38,9 +38,10 @@ _Julio César Galindo López_
 st.subheader('''''')
 
 st.subheader('''
-        Presenta \n
+        Intergrantes: \n
         +Bañuelos Rangel Martha Esther\\
         +Jesus Kohel Islas
+        +Vega Martinez Max
 ''')
 
 
