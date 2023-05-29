@@ -235,7 +235,7 @@ with tab1:
                           aux.append(matrix[i][j].subs(ev).evalf())
                       mm.append(aux)
                  return np.array(mm)
-             def avelVector(ff, x0,symb):
+             def evalVector(ff, x0,symb):
                  """Dada una lista de expresiones simbólicas, una lista de valores para los símbolos y una lista de los símbolos, evalúe las
     expresiones simbólicas con los valores dados
 
@@ -271,6 +271,7 @@ with tab1:
                  jev = sy.Matrix( eval_matrix(j,x0,symb))
                  jinv = jev.inv()
                  ffev = sy.Matrix(evalVector(np.transpose(ff),x0,symb))
+                 #print("J^-1(",x0,")*","F(",x0,")")
                  mm = sy.Matrix(jinv)*ffev
                  x_np1 = sy.Matrix(np.transpose(np.array(x0)))
                  return list(x_np1-mm)
@@ -304,7 +305,7 @@ with tab1:
                  xns = [x_0]
                  erros = []
                  iterr = []
-                 while rue and iterr < maxiter:
+                 while True and iterr < maxiter:
                      x_1 = NewtonMethod(ff,x_0,symbs)
                      ninf = norm_inf(x_0,x_1)
                      erros.append(ninf)
