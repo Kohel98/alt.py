@@ -10,6 +10,7 @@ import plotly as ply
 import plotly.express as ex
 import plotly.graph_objects as gro
 from plotly.subplots import make_subplots
+
 tab1, tab2, tab3 = st.tabs(["Definiciones","Ejemplos","Aplicaciones"])
 with tab1:
          st.title(":blue[Metodo de Newton(-Raphson)]")
