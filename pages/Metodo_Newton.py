@@ -238,12 +238,12 @@ with tab1:
                  return np.array(mm)
              def evalVector(ff, x0,symb):
                  """Dada una lista de expresiones simbólicas, una lista de valores para los símbolos y una lista de los símbolos, evalúe las
-    expresiones simbólicas con los valores dados
+                 expresiones simbólicas con los valores dados
 
-    :param ff: el vector de funciones
-    :param x0: conjetura inicial
-    :param symb: los símbolos que se utilizan en la expresión simbólica
-    :return: el valor de la función en el punto x0.
+                 :param ff: el vector de funciones
+                 :param x0: conjetura inicial
+                 :param symb: los símbolos que se utilizan en la expresión simbólica
+                 :return: el valor de la función en el punto x0.
     
                  """
                  v = []
@@ -257,15 +257,15 @@ with tab1:
              def NewtonMethod(ff, x0, symb):
                  """
                   La función recibe un vector de funciones, un vector de conjeturas iniciales y un vector de símbolos. A continuación, calcula
-    la matriz jacobiana, la matriz jacobiana evaluada en la conjetura inicial, la inversa de la matriz jacobiana evaluada en la conjetura inicial, el vector de funciones evaluado en la conjetura inicial, y luego el paso de Newton.
-    evaluada en la conjetura inicial, el vector de funciones evaluadas en la conjetura inicial y el paso de Newton.
+                  la matriz jacobiana, la matriz jacobiana evaluada en la conjetura inicial, la inversa de la matriz jacobiana evaluada en la conjetura inicial, el vector de funciones evaluado en la conjetura inicial, y luego el paso de Newton.
+                  evaluada en la conjetura inicial, el vector de funciones evaluadas en la conjetura inicial y el paso de Newton.
 
-    La función devuelve el paso Newton.
+                  La función devuelve el paso Newton.
 
-    :param ff: la función de la que queremos encontrar la raíz
-    :param x0: estimación inicial
-    :param symb: los símbolos utilizados en la función
-    :return: El valor de retorno es el valor x_np1.
+                 :param ff: la función de la que queremos encontrar la raíz
+                 :param x0: estimación inicial
+                 :param symb: los símbolos utilizados en la función
+                 :return: El valor de retorno es el valor x_np1.
     
                  """
                  j = jacobian(ff,symb)
@@ -280,11 +280,11 @@ with tab1:
              def norm_inf(x_0, x_1):
                  """
                  La función `norm_inf` toma dos vectores `x_0` y `x_1` y devuelve la máxima diferencia absoluta entre los dos
-    vectores
+                 vectores
 
-    :param x_0: el vector inicial
-    :param x_1: el vector de la iteración actual
-    :devuelve: La máxima diferencia entre los dos vectores.
+                 :param x_0: el vector inicial
+                 :param x_1: el vector de la iteración actual
+                 :devuelve: La máxima diferencia entre los dos vectores.
     
                  """
                  a = [abs(x_1[i]-x_0[i]) for i in range(len(x_0))]
@@ -293,12 +293,12 @@ with tab1:
              def newton_method(ff,x_0,symbs,error,maxiter):
                  """
                  Dada una función (x,y)$, un punto inicial $, y una lista de símbolos,
-    la función devolverá el siguiente punto $ en la secuencia del método de Newton
+                 la función devolverá el siguiente punto $ en la secuencia del método de Newton
 
-    :param ff: función a minimizar
-    :param x_0: punto de partida
-    :param symbs: los símbolos que usamos en la función
-    :return: el valor final de x_0, la lista de valores de x, y la lista de valores de y.
+                 :param ff: función a minimizar
+                 :param x_0: punto de partida
+                 :param symbs: los símbolos que usamos en la función
+                 :return: el valor final de x_0, la lista de valores de x, y la lista de valores de y.
     
                  """
                  xs = []
@@ -322,9 +322,9 @@ with tab1:
              def get_sympy_subplots(plot:Plot):
                  """Toma un objeto plot y devuelve un objeto figure de matplotlib
 
-    param gráfico: El objeto plot a renderizar
-    :type gráfico: Gráfico
-    :return: Un objeto de figura matplotlib.
+                  param gráfico: El objeto plot a renderizar
+                 :type gráfico: Gráfico
+                 :return: Un objeto de figura matplotlib.
     
                  """
                  
@@ -372,14 +372,14 @@ with tab1:
                 este caso por la matriz jacobian''')
              st.latex(methd_desc3)
              st.write('''Así, el método de Newton comienza por un vector inicial $(x_0, y_0)^T$ y calcula el resto de aproximaciones
-mediante ''')
+             mediante ''')
              st.latex(methd_desc4)
              st.write('''
-donde $(F'(x_n, y_n))^1$ es la matriz inversa de $F'(x_n, y_n)$. Para poder aplicar este método es necesario que
-$F'(x, y)$ sea no singular.\\
-Un problema del método anterior es que el cálculo de la matriz inversa es costoso computacionalmente y
-debemos calcularla en cada paso. Esto se puede resolver descomponiendo el método en dos etapas:
-''')
+             donde $(F'(x_n, y_n))^1$ es la matriz inversa de $F'(x_n, y_n)$. Para poder aplicar este método es necesario que
+             $F'(x, y)$ sea no singular.\\
+             Un problema del método anterior es que el cálculo de la matriz inversa es costoso computacionalmente y
+             debemos calcularla en cada paso. Esto se puede resolver descomponiendo el método en dos etapas:
+             ''')
              st.write('1. Resolver el sistema lineal con dos ecuaciones y dos incognitas:')
              st.latex(r'''
                 F'(x_n, y_n)
