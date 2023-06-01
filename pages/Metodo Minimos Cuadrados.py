@@ -9,11 +9,7 @@ import plotly as ply
 import plotly.express as ex
 import plotly.graph_objects as gro
 from plotly.subplots import make_subplots
-tab1, tab2, tab3 = st.tabs(["Definiciones","Ejemplos","Aplicaciones"])
-import streamlit as st
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
+
 
 
 tab1, tab2, tab3 = st.tabs(["Definiciones","Ejemplo","Aplicacion"])
